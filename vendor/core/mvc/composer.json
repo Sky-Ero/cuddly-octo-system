@@ -1,8 +1,0 @@
-{
-    "name": "core/mvc",
-    "autoload": {
-        "psr-4": {
-            "Core\\": "src/"
-        }
-    }
-}

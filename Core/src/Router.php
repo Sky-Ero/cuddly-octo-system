@@ -15,21 +15,20 @@ class Router
 
     private function __construct()
     {
+        $classLoader = require __DIR__ . '/../../vendor/autoload.php';
+
         // get all classes extended by AbstractController and find method with route attribute
-        $reflectionClass = new ReflectionClass(AbstractController::class);
-        $methods = $reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC);
-        foreach (get_declared_classes() as $class) {
-            if (!is_subclass_of($class, AbstractController::class)) {
-                continue;
-            }
-
-            foreach ($methods as $method) {
-                $attributes = $method->getAttributes(Route::class);
-
-                foreach ($attributes as $attribute) {
-                    $route = $attribute->newInstance();
-                    $this->routes[$route->path] = $reflectionClass->getName() . '::' . $method->getName();
-                    echo "Route: " . $route->path . " => " . $reflectionClass->getName() . '::' . $method->getName() . PHP_EOL;
+        $classes = $classLoader->getClassMap();
+        foreach ($classes as $class => $path) {
+            $reflection = new ReflectionClass($class);
+            if ($reflection->isSubclassOf(AbstractController::class)) {
+                $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
+                foreach ($methods as $method) {
+                    $attributes = $method->getAttributes(Route::class);
+                    if (count($attributes) > 0) {
+                        $route = $attributes[0]->newInstance();
+                        $this->routes[$route->path] = $class . '::' . $method->getName();
+                    }
                 }
             }
         }
@@ -43,12 +42,16 @@ class Router
         return self::$instance;
     }
 
-    public function match(Request $request): Route
+    public function match(Request $request): array | null
     {
         $routeControllerName = $this->routes[$request->path] ?? '';
+        if ($routeControllerName === '') {
+            return null;
+        }
 
-        $route = new Route($request->path, $routeControllerName);
-
-        return $route;
+        $routeClass = explode('::', $routeControllerName)[0];
+        $object = new $routeClass();
+        $routeMethod = explode('::', $routeControllerName)[1];
+        return [$object, $routeMethod];
     }
 }

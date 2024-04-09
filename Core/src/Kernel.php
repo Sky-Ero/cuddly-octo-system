@@ -14,13 +14,13 @@ class Kernel
 
     public function handleRequest(Request $request): Response
     {
-        $route = $this->router->match($request);
+        [$routeObject, $routeMethod] = $this->router->match($request);
 
-        if ($route === null || $route === '') {
+        if ($routeObject === null) {
             return new Response("Not found", 404);
         }
 
-        $response = call_user_func($route->function, $request); // TODO DI
+        $response = $routeObject->$routeMethod($request);
 
         return $response;
     }
