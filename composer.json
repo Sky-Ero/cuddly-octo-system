@@ -1,0 +1,19 @@
+{
+    "name": "test_app/mvc",
+    "version": "1.0.0",
+    "require": {
+        "php": ">=8.2.0",
+        "core/mvc": "dev-main"
+    },
+    "autoload": {
+        "psr-4": {
+            "TestApp\\": "TestApp/src/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "d:/projects/php_mvc/core"
+        }
+    ]
+}
