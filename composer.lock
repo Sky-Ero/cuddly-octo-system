@@ -1,0 +1,41 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "0b4f18b367c36e9470dc8624f8763715",
+    "packages": [
+        {
+            "name": "core/mvc",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "d:/projects/php_mvc/core",
+                "reference": "9c22c5797644d6ca6d7fb7ddf9521e0af569e3d4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Core\\": "src/"
+                }
+            },
+            "transport-options": {
+                "relative": false
+            }
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "core/mvc": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=8.2.0"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.6.0"
+}
