@@ -3,7 +3,10 @@
     "version": "1.0.0",
     "require": {
         "php": ">=8.2.0",
-        "core/mvc": "dev-main"
+        "mvc_core/mvc": "dev-main"
+    },
+    "require-dev": {
+        "nikic/php-parser": "^4.19"
     },
     "autoload": {
         "psr-4": {

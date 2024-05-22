@@ -1,0 +1,9 @@
+controllers:
+  resource:
+    path: ../TestApp/src/
+    namespace: TestApp
+
+other_controllers:
+  resource:
+    path: ../src/
+    namespace: TestApp

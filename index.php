@@ -1,5 +1,17 @@
 <?php
-require __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/main.php';
 
-main();
+namespace TestApp;
+require './vendor/autoload.php';
+use Core\Main;
+
+class Index
+{
+    public function index()
+    {
+        $kernel = new Main();
+        $kernel->run();
+        // var_dump(get_declared_classes());
+    }
+}
+
+(new Index())->index();
