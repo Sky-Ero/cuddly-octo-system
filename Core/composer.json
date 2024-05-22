@@ -1,11 +1,13 @@
 {
-    "name": "core/mvc",
+    "name": "mvc_core/mvc",
+    "type": "library",
     "autoload": {
         "psr-4": {
             "Core\\": "src/"
         }
     },
     "require": {
-        "php": ">=8.2"
+        "php": ">=8.2",
+        "nikic/php-parser": "^4.19"
     }
 }
