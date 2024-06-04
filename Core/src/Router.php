@@ -30,7 +30,8 @@ class Router implements ServiceInterface
         return self::$instance;
     }
 
-    public function run(){
+    public function run()
+    {
         echo "Router is running\n";
     }
 
@@ -62,13 +63,35 @@ class Router implements ServiceInterface
      * for this case we will scan FirstNamespace and SecondNamespace directories (../Some and ../Other) and load routes recursively
      */
 
-    public static function warmup(Config $config): void
+
+    private function insertPath(array $raw_route): void
+    {
+        // /a/{}/b
+        $route = $raw_route[0];
+        // $controller = $raw_route['controller'];
+
+        $route = trim($route, '/');
+        $levels = explode('/', $route);
+
+        $curr_level = &$this->routes;
+        foreach ($levels as &$level) {
+            if (!array_key_exists($level, $curr_level)) {
+                $curr_level[$level] = array();
+            }
+
+            $curr_level = &$curr_level[$level];
+        }
+
+        $curr_level['/'] = $raw_route;
+    }
+
+    public function warmup(Config $config): void
     {
         $namespaces = $config::$config; // list of namespaces names to scan
 
         $parser = (new ParserFactory())->createForNewestSupportedVersion();
         $routeClassVisitor = new RouteClassVisitor("");
-        foreach ($namespaces as $namespace=>$controllers) {
+        foreach ($namespaces as $namespace => $controllers) {
             $namespace = '\\' . $namespace; // add \
             $dir_name = __DIR__ . '/../' . $controllers['resource']['path'];
             if (!file_exists($dir_name) || !is_dir($dir_name)) {
@@ -79,13 +102,21 @@ class Router implements ServiceInterface
             self::scanDirectory($dir, $routeClassVisitor, $parser);
         }
 
-        self::$instance->routes = $routeClassVisitor->getRoutes();
+        for ($i = 0; $i < count($routeClassVisitor->getRoutes()); $i++) {
+
+            $route = $routeClassVisitor->getRoutes()[$i];
+
+            $controller = $route['controller'];
+
+            $this->insertPath($route, $controller);
+        }
     }
 
-    private static function scanDirectory(\DirectoryIterator $dir, RouteClassVisitor $routeClassVisitor, Parser $parser): void{
+    private static function scanDirectory(\DirectoryIterator $dir, RouteClassVisitor $routeClassVisitor, Parser $parser): void
+    {
         $traverser = new NodeTraverser();
         $traverser->addVisitor($routeClassVisitor);
-    
+
 
         $visitDir = function (\DirectoryIterator $dir) use (&$parser, &$routeClassVisitor, &$traverser, &$visitDir) {
             while ($dir->valid()) {
@@ -95,27 +126,34 @@ class Router implements ServiceInterface
                     $routeClassVisitor->filepath = $dir->getPath() . '/' . $dir->getFilename();
                     $ast = $parser->parse($code);
                     $traverser->traverse($ast);
+
                 } else if ($dir->isDir() && $dir->getFilename() !== '.' && $dir->getFilename() !== '..') {
                     $visitDir(new \DirectoryIterator($dir->getPath() . '/' . $dir->getFilename()));
                 }
                 $dir->next();
             }
         };
-    
+
+
         $visitDir($dir);
-    
     }
 
     public function match(Request &$request): array | null
     {
-        $routeControllerName = $this->routes[$request->path] ?? '';
-        if ($routeControllerName === '') {
-            return null;
+        $path = $request->path;
+        $path = trim($path, '/');
+
+        $levels = explode('/', $path);
+
+        $curr_level = &$this->routes;
+        foreach ($levels as &$level) {
+            if (!array_key_exists($level, $curr_level)) {
+                return null;
+            }
+
+            $curr_level = &$curr_level[$level];
         }
 
-        $routeClass = explode('::', $routeControllerName)[0];
-        $object = new $routeClass();
-        $routeMethod = explode('::', $routeControllerName)[1];
-        return [$object, $routeMethod];
+        return $curr_level['/'];
     }
 }
