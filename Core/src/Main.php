@@ -57,6 +57,6 @@ class Main
         $class_method = $controller_description['class_method'];
         $response = $controller->$class_method($request, $service_loader);
 
-        var_dump($response);
+        $response->send();
     }
 }

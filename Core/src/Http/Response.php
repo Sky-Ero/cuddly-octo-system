@@ -2,7 +2,7 @@
 
 namespace Core\Http;
 
-class Response
+abstract class Response
 {
     public function __construct(
         public string $content,
@@ -10,4 +10,6 @@ class Response
         public array $headers = []
     ) {
     }
+
+    public abstract function send(): void;
 }
