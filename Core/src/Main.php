@@ -8,6 +8,7 @@ use Core\ServiceLoader;
 use Core\ConfigYAML;
 use Core\RequestFactory;
 use Core\Services\MiddlewareRegister;
+use Core\Services\MiddlewareTypes;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -44,8 +45,10 @@ class Main
         $router->warmup($config);
 
         $request = RequestFactory::MakeRequestFromGlobals();
+        $middleware_register->CallMiddleware(MiddlewareTypes::REQUEST_CREATED, $request);
 
         $controller_description = $router->match($request);
+        
 
         $controller_class = explode('/', $controller_description['controller']);
         $controller_class = $controller_class[count($controller_class) - 1];

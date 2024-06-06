@@ -5,6 +5,7 @@ namespace Core\Services;
 use Core\Services\MiddlewareAbstract;
 use Core\Services\MiddlewareTypes;
 use Core\Config;
+use Core\Http\Request;
 use Core\Services\ServiceInterface;
 
 class MiddlewareRegister implements ServiceInterface
@@ -16,9 +17,6 @@ class MiddlewareRegister implements ServiceInterface
 
     private function __construct()
     {
-        foreach (MiddlewareTypes::cases() as $type) {
-            $this->middlewares[$type->value] = [];
-        }
     }
 
     public static function getInstance(): MiddlewareRegister
@@ -29,7 +27,7 @@ class MiddlewareRegister implements ServiceInterface
         return self::$instance;
     }
 
-    public function run()
+    public function run(): void
     {
         // TODO
     }
@@ -39,10 +37,10 @@ class MiddlewareRegister implements ServiceInterface
         $type = $middleware->getMiddlewareType();
         $this->middlewares[$type][] = $middleware;
     }
-    public function CallMiddleware(MiddlewareType $type): void
+    public function CallMiddleware(MiddlewareTypes $type, Request &$request): void
     {
-        foreach ($this->middlewares[$type->value] as $middleware) {
-            $middleware->run();
+        foreach ($this->middlewares[$type->name] as $middleware) {
+            $middleware->run($request);
         }
     }
 
@@ -56,19 +54,21 @@ class MiddlewareRegister implements ServiceInterface
     {
 
         $middlewares_config = $config::$config['middlewares'];
-
+        $namespace = $middlewares_config['namespace'];
         foreach ($middlewares_config as $type => $middlewares) {
+            if ($type == 'namespace' )
+                continue;
             if (!isset($this->middlewares[$type])) {
                 $this->middlewares[$type] = [];
             }
 
-            foreach ($middlewares as $middleware) {
+            foreach ($middlewares as  $middleware) {
                 $this->loadMiddlewareClassFile($middleware);
                 $middleware_class = explode('\\', $middleware);
                 $middleware_class = $middleware_class[count($middleware_class) - 1];
                 $middleware_class = explode('.', $middleware_class)[0];
 
-                $this->middlewares[$type][] = new $middleware_class();
+                $this->middlewares[$type][] = new ($namespace.'\\'.$middleware_class)();
             }
         }
     }
