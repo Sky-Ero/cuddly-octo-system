@@ -25,7 +25,7 @@ class TemplateResponse extends Response
         $this->context = $context;
 
         $this->loader = new FilesystemLoader(__DIR__ . '/../../../templates');
-        $this->loader->addPath(__DIR__ . '/../default_templates', 'default');
+        $this->loader->addPath(__DIR__ . '/../defaultTemplates', 'default');
 
 
         $this->twig = new Environment($this->loader);

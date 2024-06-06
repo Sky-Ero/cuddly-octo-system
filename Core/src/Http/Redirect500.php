@@ -5,20 +5,21 @@ namespace Core\Http;
 use Core\Http\Response;
 use Core\Http\Redirect;
 
-class Redirect404 extends Response
+class Redirect500 extends Response
 {
-    public function __construct()
+    private array $context;
+    public function __construct(array $context = [])
     {
-        parent::__construct("", 404);
+        parent::__construct("", 500);
+
+        $this->context = $context;
     }
+
     public function send(): void
     {
         $response = new TemplateResponse(
-            '@default/error400.twig',
-            [
-                'errno' => 404,
-                'errstr' => 'Controller not found',
-            ]
+            '@default/error500.twig',
+            $this->context
         );
         $response->send();
         parent::send();
