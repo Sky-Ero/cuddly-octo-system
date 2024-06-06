@@ -1,6 +1,11 @@
 <?php
-
 namespace Core;
+
+use Core\Router\Router;
+use Core\Services\ServiceContainer;
+use Core\ServiceLoader;
+use Core\ConfigYAML;
+use Core\RequestFactory;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -24,8 +29,10 @@ class Main
 
         // var_dump(get_declared_interfaces());
 
-        $serviceLoader = new ServiceLoader();
-
+        $service_loader = new ServiceLoader();
+        $service_loader->loadDirectory(__DIR__);
+        $service_container = new ServiceContainer();
+        $service_loader->register($service_container);
         $router = Router::getInstance();
 
         $router->warmup($config);
@@ -36,12 +43,10 @@ class Main
 
         $controller_class = explode('/', $controller_description['controller']);
         $controller_class = $controller_class[count($controller_class) - 1];
-        
-        require($controller_description['controller']);
-
+    
         $controller = new ($controller_description['namespace'] . '\\' . explode('.', $controller_class)[0])();
         $class_method = $controller_description['class_method'];
-        $response = $controller->$class_method($request, $serviceLoader);
+        $response = $controller->$class_method($request, $service_loader);
 
         var_dump($response);
     }

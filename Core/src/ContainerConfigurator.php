@@ -2,13 +2,13 @@
 
 namespace Core;
 
-use Core\ServiceContainer;
-use Core\Router;
+use Core\Services\ServiceContainer;
+use Core\Services\MiddlewareRegister;
+use Core\Router\Router;
 
 class ContainerConfigurator
 {
     public static function configure(ServiceContainer $container): void
     {
-        $container->register(new Router());
     }
 }

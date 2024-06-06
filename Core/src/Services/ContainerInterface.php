@@ -1,6 +1,6 @@
 <?php
 
-namespace Core;
+namespace Core\Services;
 
 /*
 * this interface is used to load config files and provide a simple interface to access parameters

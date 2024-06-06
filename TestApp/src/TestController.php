@@ -2,7 +2,10 @@
 
 namespace TestApp;
 
-use Core\{Route, Response, AbstractController};
+use Core\Router\Route;
+use Core\AbstractController;
+use Core\Http\Response;
+use Core\Http\Request;
 
 class TestController extends AbstractController
 {

@@ -1,9 +1,13 @@
 <?php
 
-namespace Core;
+namespace Core\Router;
 
 use Core\Route;
 use Core\AbstractController;
+use Core\Services\ServiceInterface;
+use Core\Config;
+use Core\ConfigYAML;
+use Core\Http\Request;
 
 use Exception;
 use PhpParser\ParserFactory;
