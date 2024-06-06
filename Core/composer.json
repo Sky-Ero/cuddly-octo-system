@@ -8,6 +8,7 @@
     },
     "require": {
         "php": ">=8.2",
-        "nikic/php-parser": "^4.19"
+        "nikic/php-parser": "^4.19",
+        "twig/twig": "^3.10"
     }
 }
