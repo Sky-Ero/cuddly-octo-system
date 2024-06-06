@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Вы авторизованы</title>
+		<title>{{ errno }}</title>
 	</head>
 	<body>
-		<h1>Ваше имя пользователя:</h1>
-    <span>{{ login }}<span>
+		<div class="container">
+			<h1>У вас {{ errno }}</h1>
+      <p>Похоже, что-то пошло не так</p>
+      <p>Вернитесь обратно и сделайте с этим что-нибудь😵‍💫😵‍💫</p>
 	</body>
 	<style>
     body {
       font-family: Arial, Helvetica, sans-serif;
     }
-
-		.container {
-			padding: 16px;
-		}
 
 		@media screen and (max-width: 300px) {
 			span.psw {
