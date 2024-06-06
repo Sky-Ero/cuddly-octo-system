@@ -6,6 +6,8 @@ use Core\Router\Router;
 use Core\Services\ServiceContainer;
 use Core\ServiceLoader;
 use Core\ConfigYAML;
+use Core\Http\DefaultResponse;
+use Core\Http\TemplateResponse;
 use Core\RequestFactory;
 use Core\Services\MiddlewareRegister;
 use Core\Services\MiddlewareTypes;
@@ -25,8 +27,27 @@ require __DIR__ . '/../vendor/autoload.php';
 
 class Main
 {
+
+    public static function errorHandler($errno, $errstr, $errfile, $errline)
+    {
+        $response = new TemplateResponse(
+            'error.twig',
+            [
+                'errno' => $errno,
+                'errstr' => $errstr,
+                'errfile' => $errfile,
+                'errline' => $errline
+            ]
+        );
+
+        $response->send();
+        die();
+    }
+
     public static function run()
     {
+        set_error_handler([__CLASS__, 'errorHandler']);
+
         $config = new ConfigYAML();
         $config->load(__DIR__ . '/../../config/routes.yml');
         $config->load(__DIR__ . '/../../config/middlewares.yml');
@@ -48,7 +69,7 @@ class Main
         $middleware_register->CallMiddleware(MiddlewareTypes::REQUEST_CREATED, $request);
 
         $controller_description = $router->match($request);
-        
+
 
         $controller_class = explode('/', $controller_description['controller']);
         $controller_class = $controller_class[count($controller_class) - 1];

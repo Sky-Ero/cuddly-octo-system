@@ -26,7 +26,7 @@ class RouteClassVisitor extends NodeVisitorAbstract
             $attribute->methods[] = $method->value->value;
         }
 
-        if ($attribute_string->args[2]->value !== null) {
+        if (key_exists('2', $attribute_string->args) && !empty($attribute_string->args[2]->value->value)) {
             $attribute->name = $attribute_string->args[2]->value->value;
         }
         

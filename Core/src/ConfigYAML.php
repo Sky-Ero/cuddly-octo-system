@@ -12,7 +12,8 @@ class ConfigYAML extends Config
     {
         if (file_exists($file)) {
             $config = yaml_parse_file($file);
-            self::$config = array_merge(self::$config, $config);
+            $config_name = basename($file, '.yml');
+            self::$config[$config_name] = $config;
         }
     }
 }

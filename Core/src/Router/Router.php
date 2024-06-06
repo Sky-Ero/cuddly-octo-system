@@ -91,13 +91,13 @@ class Router implements ServiceInterface
 
     public function warmup(Config $config): void
     {
-        $namespaces = $config::$config; // list of namespaces names to scan
+        $namespaces = $config::$config['routes']['controllers']; // list of namespaces names to scan
 
         $parser = (new ParserFactory())->createForNewestSupportedVersion();
         $routeClassVisitor = new RouteClassVisitor("");
         foreach ($namespaces as $namespace => $controllers) {
             $namespace = '\\' . $namespace; // add \
-            $dir_name = __DIR__ . '/../' . $controllers['resource']['path'];
+            $dir_name = __DIR__ . '/../' . $controllers['path'];
             if (!file_exists($dir_name) || !is_dir($dir_name)) {
                 continue;
             }
@@ -130,7 +130,6 @@ class Router implements ServiceInterface
                     $routeClassVisitor->filepath = $dir->getPath() . '/' . $dir->getFilename();
                     $ast = $parser->parse($code);
                     $traverser->traverse($ast);
-
                 } else if ($dir->isDir() && $dir->getFilename() !== '.' && $dir->getFilename() !== '..') {
                     $visitDir(new \DirectoryIterator($dir->getPath() . '/' . $dir->getFilename()));
                 }
@@ -144,20 +143,24 @@ class Router implements ServiceInterface
 
     public function match(Request &$request): array | null
     {
-        $path = $request->path;
-        $path = trim($path, '/');
+        try {
+            $path = $request->path;
+            $path = trim($path, '/');
 
-        $levels = explode('/', $path);
+            $levels = explode('/', $path);
 
-        $curr_level = &$this->routes;
-        foreach ($levels as &$level) {
-            if (!array_key_exists($level, $curr_level)) {
-                return null;
+            $curr_level = &$this->routes;
+            foreach ($levels as &$level) {
+                if (!array_key_exists($level, $curr_level)) {
+                    return null;
+                }
+
+                $curr_level = &$curr_level[$level];
             }
 
-            $curr_level = &$curr_level[$level];
+            return $curr_level['/'];
+        } catch (Exception $e) {
+            trigger_error("Error: " . $e->getMessage(), E_USER_ERROR);
         }
-
-        return $curr_level['/'];
     }
 }

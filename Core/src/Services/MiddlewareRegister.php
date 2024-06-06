@@ -53,7 +53,7 @@ class MiddlewareRegister implements ServiceInterface
     public function load(Config $config): void
     {
 
-        $middlewares_config = $config::$config['middlewares'];
+        $middlewares_config = $config::$config['middlewares']['middlewares'];
         $namespace = $middlewares_config['namespace'];
         foreach ($middlewares_config as $type => $middlewares) {
             if ($type == 'namespace' )
