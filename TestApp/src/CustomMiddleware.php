@@ -24,5 +24,8 @@ class CustomMiddleware extends MiddlewareAbstract
         if ($request->path == '/custom') {
             Redirect::to('/');
         }
+        if ($request->headers['Authorization'] == '123') {
+            Redirect::to('/auth');
+        }
     }
 }
