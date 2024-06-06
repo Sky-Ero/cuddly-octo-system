@@ -1,5 +1,7 @@
 <?php
+
 namespace Core;
+
 require __DIR__ . '/../vendor/autoload.php';
 
 /**
@@ -25,19 +27,22 @@ class Main
         $serviceLoader = new ServiceLoader();
 
         $router = Router::getInstance();
-        
-        
+
         $router->warmup($config);
 
         $request = RequestFactory::MakeRequestFromGlobals();
 
-        EventDispatcher::getInstance()->dispatch(new RequestCreatedEvent('request', $request));
+        $controller_description = $router->match($request);
 
-        $controller = $router->match($request);
-
-        $response = $controller[0]->call($request, $serviceLoader);
+        $controller_class = explode('/', $controller_description['controller']);
+        $controller_class = $controller_class[count($controller_class) - 1];
         
+        require($controller_description['controller']);
+
+        $controller = new ($controller_description['namespace'] . '\\' . explode('.', $controller_class)[0])();
+        $class_method = $controller_description['class_method'];
+        $response = $controller->$class_method($request, $serviceLoader);
+
         var_dump($response);
-        
     }
 }

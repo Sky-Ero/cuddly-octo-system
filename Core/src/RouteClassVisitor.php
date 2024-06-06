@@ -10,6 +10,7 @@ class RouteClassVisitor extends NodeVisitorAbstract
 {
 
     private $class;
+    private $namespace;
     // @var array<Route>
     private $routes = array();
     private const attributeName = "Route";
@@ -41,7 +42,7 @@ class RouteClassVisitor extends NodeVisitorAbstract
         return array(
             $attribute->path,
             $attribute->methods,
-            $attribute->name
+            $attribute->name,
         );
     }
 
@@ -50,11 +51,18 @@ class RouteClassVisitor extends NodeVisitorAbstract
         if ($node instanceof Node\Stmt\Class_) {
             $this->class = $node;
         }
+        if ($node instanceof Node\Stmt\Namespace_) {
+            $this->namespace = implode('\\', $node->name->getParts());
+        }
         if ($node instanceof Node\Stmt\ClassMethod) {
             foreach ($node->attrGroups as $attrGroup) {
                 foreach ($attrGroup->attrs as $attr) {
                     if ($attr->name->toString() === self::attributeName) {
-                        $this->routes[] = $this->ParseRoute($attr, $this->class);
+                        $route = $this->ParseRoute($attr, $this->class);
+                        $route['namespace'] = $this->namespace;
+                        $route['controller'] = $this->filepath;
+                        $route['class_method'] = $node->name->toString();
+                        $this->routes[] = $route;
                     }
                 }
             }
