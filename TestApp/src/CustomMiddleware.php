@@ -5,6 +5,7 @@ namespace TestApp;
 use Core\Http\Request;
 use Core\Services\MiddlewareAbstract;
 use Core\Services\MiddlewareTypes;
+use Core\Http\Redirect;
 
 class CustomMiddleware extends MiddlewareAbstract
 {
@@ -20,6 +21,8 @@ class CustomMiddleware extends MiddlewareAbstract
 
     public function run(Request &$request): void
     {
-        $request->path = 'list';
+        if ($request->path == '/custom') {
+            Redirect::to('/');
+        }
     }
 }
