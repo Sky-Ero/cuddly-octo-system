@@ -10,7 +10,6 @@ class DefinedRouteEventListener extends EventListener
 
     public function onEvent(DefinedRouteEvent $event): mixed
     {
-
         return null;
     }
 } 
