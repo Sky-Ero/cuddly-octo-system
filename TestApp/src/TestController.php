@@ -54,6 +54,18 @@ class TestController extends AbstractController
     #[Route(path: "/auth", methods: ["GET"], name: "test_auth")]
     function test_auth(Request $request): TemplateResponse
     {
-        return new TemplateResponse("authorization.twig", []);
+        return new TemplateResponse("authorization.twig", []); 
+    }
+
+    #[Route(path: "/success", methods: ["GET"], name: "test_success")]
+    function test_success(Request $request): TemplateResponse
+    {
+        return new TemplateResponse("authorized.twig", []); 
+    }
+
+    #[Route(path: "/index", methods: ["GET"], name: "test_index")]
+    function test_index(Request $request): TemplateResponse
+    {
+        return new TemplateResponse("index.twig", []); 
     }
 }

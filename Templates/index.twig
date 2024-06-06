@@ -1,35 +1,54 @@
-<style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        text-align: center;
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Главная страница</title>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Приветствуем 👋</h1>
+      <p>Вы можете войти на сайт (реально?? 😯😯😯)</p>
+
+			<div class="container" style="background-color:#f1f1f1">
+				<a href="/auth">Войти</a>
+			</div>
+	</body>
+	<style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
     }
-    table tr th, table tr td {
-        border: 1px #eee solid;
-        padding: 5px;
-    }
-</style>
-<table>
-    <thead>
-        <tr>
-            <th>Invoice Number</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Due Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for invoice in invoices %}
-            <tr>
-                <td>{{ invoice.invoiceNumber }}</td>
-                <td>{{ invoice.amount|format_currency('USD') }}</td>
-                <td>{{ invoice.status }}</td>
-                <td>
-                    {{ invoice.dueDate is empty ? 'N/A' : invoice.dueDate|date('m/d/Y') }}
-                </td>
-            </tr>
-        {% else %}
-            <tr><td colspan="4">No Invoices Found</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+
+		a {
+			background-color: #04AA6D;
+			color: white;
+			padding: 14px 20px;
+			margin: 8px 0;
+			border: none;
+			cursor: pointer;
+			width: 100%;
+		}
+
+		button:hover {
+			opacity: 0.8;
+		}
+
+		.cancelbtn {
+			width: auto;
+			padding: 10px 18px;
+			background-color: #f44336;
+		}
+
+		.container {
+			padding: 16px;
+		}
+
+		@media screen and (max-width: 300px) {
+			span.psw {
+				display: block;
+				float: none;
+			}
+			.cancelbtn {
+				width: 100%;
+			}
+		}
+	</style>
+</html> 

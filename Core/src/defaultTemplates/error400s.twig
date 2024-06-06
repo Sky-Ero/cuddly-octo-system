@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{{ errno }}</title>
+	</head>
+	<body>
+		<div class="container">
+			<h1>У вас {{ errno }}</h1>
+      <p>{{ errstr }}</p>
+      <p>Ошибка может быть тут: {{ errfile }}</p>
+      <p>конкретно вот тут: {{ errline }}</p>
+      <p>Вернитесь обратно и сделайте с этим что-нибудь😵‍💫😵‍💫</p>
+	</body>
+	<style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+		@media screen and (max-width: 300px) {
+			span.psw {
+				display: block;
+				float: none;
+			}
+			.cancelbtn {
+				width: 100%;
+			}
+		}
+	</style>
+</html> 
