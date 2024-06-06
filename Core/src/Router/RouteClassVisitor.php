@@ -58,10 +58,19 @@ class RouteClassVisitor extends NodeVisitorAbstract
             foreach ($node->attrGroups as $attrGroup) {
                 foreach ($attrGroup->attrs as $attr) {
                     if ($attr->name->toString() === self::attributeName) {
+                        
                         $route = $this->ParseRoute($attr, $this->class);
+                        $dependencies = [];
+                        foreach ($node->params as $param) {
+                            if ($param->type === null) {
+                                continue;
+                            }
+                            $dependencies[] = $param->type->toString();
+                        }
                         $route['namespace'] = $this->namespace;
                         $route['controller'] = $this->filepath;
                         $route['class_method'] = $node->name->toString();
+                        $route['dependencies'] = $dependencies;
                         $this->routes[] = $route;
                     }
                 }

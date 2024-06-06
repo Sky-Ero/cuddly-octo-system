@@ -31,9 +31,14 @@ class TestController extends AbstractController
     }
 
     #[Route(path: "/post", methods: ["POST"], name: "test_post")]
-    function test_post(PostRequest $request): DefaultResponse
+    function test_post(PostRequest $request, \TestApp\UsersService $usersService): DefaultResponse
     {
-        return new DefaultResponse(json_encode($request->payload));
+        $login = $request->payload['username'];
+        $password = $request->payload['password'];
+        if ($usersService->checkUserLogin($login, $password)) {
+            return new DefaultResponse("Login exists, World!", 302, ['Location' => '/success'], ['login' => $login]);
+        }
+        return new DefaultResponse("Login created, World!");
     }
 
     #[Route(path: "/redirect", methods: ["GET"], name: "test_redirect")]
@@ -54,19 +59,19 @@ class TestController extends AbstractController
     #[Route(path: "/login", methods: ["GET"], name: "test_auth")]
     function test_auth(Request $request): TemplateResponse
     {
-        return new TemplateResponse("authorization.twig", []); 
+        return new TemplateResponse("authorization.twig", []);
     }
 
     #[Route(path: "/success", methods: ["GET"], name: "test_success")]
     function test_success(Request $request): TemplateResponse
     {
-        $login = $request->headers['login']; 
-        return new TemplateResponse("authorized.twig", ['login' => $login]); 
+        $login = $request->cookies['login'];
+        return new TemplateResponse("authorized.twig", ['login' => $login]);
     }
 
     #[Route(path: "/index", methods: ["GET"], name: "test_index")]
     function test_index(Request $request): TemplateResponse
     {
-        return new TemplateResponse("index.twig", []); 
+        return new TemplateResponse("index.twig", []);
     }
 }

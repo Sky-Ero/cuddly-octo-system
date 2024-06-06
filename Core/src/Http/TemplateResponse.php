@@ -12,8 +12,13 @@ class TemplateResponse extends Response
     private string $template;
     private array $context;
 
-    public function __construct(string $template, array $context, int $status = 200, array $headers = [])
-    {
+    public function __construct(
+        string $template,
+        array $context,
+        int $status = 200,
+        array $headers = [],
+        array $cookies = []
+    ) {
         parent::__construct("", $status, $headers);
 
         $this->template = $template;
@@ -22,12 +27,14 @@ class TemplateResponse extends Response
         $this->loader = new FilesystemLoader(__DIR__ . '/../../../templates');
         $this->loader->addPath(__DIR__ . '/../default_templates', 'default');
 
-        
+
         $this->twig = new Environment($this->loader);
     }
 
     public function send(): void
     {
+        parent::send();
+
         $this->headers['Content-Type'] = 'text/html';
 
         echo $this->twig->render($this->template, $this->context);

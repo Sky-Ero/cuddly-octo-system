@@ -74,10 +74,19 @@ class Main
 
         $controller_class = explode('/', $controller_description['controller']);
         $controller_class = $controller_class[count($controller_class) - 1];
+        $controller_dependencies = $controller_description['dependencies'];
+        $controller_services = [];
+
+        foreach ($controller_dependencies as $dependency) {
+            if (!$service_container->has($dependency)) {
+                continue;
+            }
+            $controller_services[] = $service_container->get($dependency);
+        }
 
         $controller = new ($controller_description['namespace'] . '\\' . explode('.', $controller_class)[0])();
         $class_method = $controller_description['class_method'];
-        $response = $controller->$class_method($request, $service_loader);
+        $response = $controller->$class_method($request, ...$controller_services);
 
         $response->send();
     }

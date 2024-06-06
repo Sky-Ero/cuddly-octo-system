@@ -34,9 +34,9 @@ class AuthMiddleware extends MiddlewareAbstract
 
         if (
             $request->path == '/success'
-            && (!key_exists('login', $request->headers)
-                || empty($request->headers['login']
-                    || !$usersService->checkUserExists($request->headers['login'])))
+            && (!key_exists('login', $request->cookies)
+                || empty($request->cookies['login']
+                    || !$usersService->checkUserExists($request->cookies['login'])))
         ) { {
                 Redirect::to('/login');
             }

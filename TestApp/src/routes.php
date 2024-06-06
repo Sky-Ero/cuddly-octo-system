@@ -1,5 +1,6 @@
 <?php
 
+use TestApp\UsersService;
 
 class Routes
 {
@@ -8,7 +9,7 @@ class Routes
     }
 
     #[Route(path: "/", methods: ["GET"])]
-    public function index()
+    public function index(UsersService $id, $any_var)
     {
         return "Hello, World!";
     }
