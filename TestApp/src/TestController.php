@@ -6,6 +6,7 @@ use Core\Router\Route;
 use Core\AbstractController;
 use Core\Http\Response;
 use Core\Http\Request;
+use Core\Http\PostRequest;
 
 class TestController extends AbstractController
 {
@@ -25,5 +26,11 @@ class TestController extends AbstractController
     function test_create(): Response
     {
         return new Response("Create, World!");
+    }
+
+    #[Route(path: "/post", methods: ["POST"], name: "test_post")]
+    function test_post(PostRequest $request): Response
+    {
+        return new Response(json_encode($request->payload));
     }
 }
