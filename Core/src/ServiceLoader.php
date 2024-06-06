@@ -3,15 +3,41 @@
 namespace Core;
 
 use Exception;
-use Core\ServiceContainer;
+use Core\Services\ServiceContainer;
+use Core\Services\ServiceClassVisitor;
 use PhpParser\Error;
 use PhpParser\NodeDumper;
 use PhpParser\ParserFactory;
+use PhpParser\NodeTraverser;
 use PhpParser\NodeFinder;
 use PhpParser\Node\Stmt\Class_;
+use DirectoryIterator;
 
 class ServiceLoader
 {
+
+    // @var array<ServiceLoading>
+    private array $service_classes = [];
+    private ServiceClassVisitor $service_class_visitor;
+
+    public function __construct()
+    {
+        $this->service_class_visitor = new ServiceClassVisitor();
+    }
+
+    public function loadDirectory(string $directory): void
+    {
+        $dir = new DirectoryIterator($directory);
+        foreach ($dir as $file) {
+            if ($file->isFile() && $file->getExtension() === 'php') {
+                $this->load($file->getPathname());
+            }
+
+            if ($file->isDir() && $file->getFilename() !== '.' && $file->getFilename() !== '..') {
+                $this->loadDirectory($file->getPathname());
+            }
+        }
+    }
 
     /**
      * Load service class from file and register it in service container if not already registered and all dependencies are loaded.
@@ -21,23 +47,25 @@ class ServiceLoader
      * @throws Exception
      */
 
-    public static function load(string $filename): void
+    public function load(string $filename): void
     {
         $parser = (new ParserFactory())->createForNewestSupportedVersion();
         $ast = $parser->parse(file_get_contents($filename));
-        
-        $nodeFinder = new NodeFinder();
-        $classNodes = $nodeFinder->findInstanceOf($ast, Class_::class);
+        $this->service_class_visitor->clear();
+        $this->service_class_visitor->setFilepath($filename);
+        $traverser = new NodeTraverser();
+        $traverser->addVisitor($this->service_class_visitor);
+        $traverser->traverse($ast);
+    }
 
-        foreach ($classNodes as $classNode) {
-            $class = $classNode->namespacedName->toString();
-            echo "Loading $class\n";
-            echo "Dependencies: " . count($classNode->stmts) . "\n";
-            echo "Constructor: " . count($classNode->stmts[0]->stmts) . "\n";
-            echo "Class Node: " . (new NodeDumper())->dump($classNode) . "\n";
+    public function register(ServiceContainer $container): void
+    {
+        foreach ($this->service_class_visitor->getServices() as $service) {
+            $class_name = $service->class;
+            $class_namespace = $service->namespace . '\\';
+            
+
+            $container->register((($class_namespace.$class_name.'::').'getInstance')());
         }
-        
-
     }
 }
-

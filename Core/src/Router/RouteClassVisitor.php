@@ -1,6 +1,6 @@
 <?php
 
-namespace Core;
+namespace Core\Router;
 
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;

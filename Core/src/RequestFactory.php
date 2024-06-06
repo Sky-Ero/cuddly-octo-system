@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Core\Http\Request;
+
 class RequestFactory
 {
     public static function MakeRequestFromGlobals(): Request

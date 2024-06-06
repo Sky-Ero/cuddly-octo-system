@@ -1,5 +1,5 @@
 <?php
-namespace Core;
+namespace Core\Services;
 
 
 /*  service interface
@@ -13,5 +13,7 @@ interface ServiceInterface
     // public function __construct();
 
     public function run();
+
+    public static function getInstance();
 }
 

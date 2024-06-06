@@ -1,9 +1,9 @@
 controllers:
   resource:
-    path: ../TestApp/src/
+    path: ../../TestApp/src/
     namespace: TestApp
 
 other_controllers:
   resource:
-    path: ../src/
+    path: ../../src/
     namespace: TestApp
