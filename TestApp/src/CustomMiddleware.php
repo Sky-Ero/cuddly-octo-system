@@ -15,7 +15,7 @@ class CustomMiddleware extends MiddlewareAbstract
 
     public function getMiddlewareType(): MiddlewareTypes
     {
-        return MiddlewareTypes::CONTROLLER_MATCHED;
+        return MiddlewareTypes::REQUEST_CREATED;
     }
 
     public function run(Request &$request): void
