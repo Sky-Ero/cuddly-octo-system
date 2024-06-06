@@ -40,7 +40,7 @@ abstract class Config implements ContainerInterface
      */
     public function get(string $key): mixed
     {
-        return self::$config[$key];
+        return self::$config.$key;
     }
 
     /**
