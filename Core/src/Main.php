@@ -31,7 +31,7 @@ class Main
     public static function errorHandler($errno, $errstr, $errfile, $errline)
     {
         $response = new TemplateResponse(
-            'error.twig',
+            '@default/error.twig',
             [
                 'errno' => $errno,
                 'errstr' => $errstr,
@@ -51,10 +51,11 @@ class Main
         $config = new ConfigYAML();
         $config->load(__DIR__ . '/../../config/routes.yml');
         $config->load(__DIR__ . '/../../config/middlewares.yml');
+        $config->load(__DIR__ . '/../../config/services.yml');
 
         $service_loader = new ServiceLoader();
-        $service_loader->loadDirectory(__DIR__);
-        $service_container = new ServiceContainer();
+        $service_loader->load($config);
+        $service_container = ServiceContainer::getInstance();
         $service_loader->register($service_container);
 
         $middleware_register = ($service_container->get(MiddlewareRegister::class));

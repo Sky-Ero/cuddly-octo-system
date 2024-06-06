@@ -8,7 +8,19 @@ class ServiceContainer implements ContainerInterface
 {
     // @var ServiceInterface[]
     private static array $services = [];
+    private static ?ServiceContainer $instance = null;
+    
+    private function __construct()
+    {
+    }
 
+    public static function getInstance(): ServiceContainer
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new self;
+        }
+        return self::$instance;
+    }
     /**
      * register service
      * @param ServiceInterface $service

@@ -40,7 +40,12 @@ class MiddlewareRegister implements ServiceInterface
     public function CallMiddleware(MiddlewareTypes $type, Request &$request): void
     {
         foreach ($this->middlewares[$type->name] as $middleware) {
-            $middleware->run($request);
+            $middleware_services = $middleware->getRequestedServices();
+            $services = [];
+            foreach ($middleware_services as $service) {
+                $services[] = ServiceContainer::getInstance()->get($service);
+            }
+            $middleware->run($request, ...$services);
         }
     }
 

@@ -25,12 +25,19 @@ class ServiceLoader
         $this->service_class_visitor = new ServiceClassVisitor();
     }
 
+    public function load(Config $config): void
+    {
+        foreach ($config::$config['services']['services'] as $service_dir) {
+            $this->loadDirectory($service_dir);
+        }
+    }
+
     public function loadDirectory(string $directory): void
     {
         $dir = new DirectoryIterator($directory);
         foreach ($dir as $file) {
             if ($file->isFile() && $file->getExtension() === 'php') {
-                $this->load($file->getPathname());
+                $this->loadFile($file->getPathname());
             }
 
             if ($file->isDir() && $file->getFilename() !== '.' && $file->getFilename() !== '..') {
@@ -40,14 +47,14 @@ class ServiceLoader
     }
 
     /**
-     * Load service class from file and register it in service container if not already registered and all dependencies are loaded.
+     * loadFile service class from file and register it in service container if not already registered and all dependencies are loaded.
      * If not all dependencies are loaded, stores service in not_loaded array and will be loaded later when all dependencies are loaded.
      * @param string $filename
      * @return void
      * @throws Exception
      */
 
-    public function load(string $filename): void
+    public function loadFile(string $filename): void
     {
         $parser = (new ParserFactory())->createForNewestSupportedVersion();
         $ast = $parser->parse(file_get_contents($filename));

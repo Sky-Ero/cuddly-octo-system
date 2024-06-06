@@ -12,5 +12,7 @@ abstract class MiddlewareAbstract
 
     abstract public function getMiddlewareType(): MiddlewareTypes;
 
-    abstract public function run(Request &$request): void;
+    abstract public function getRequestedServices(): array;
+
+    abstract public function run(Request &$request, ...$services): void;
 }

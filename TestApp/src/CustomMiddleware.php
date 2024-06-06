@@ -19,13 +19,15 @@ class CustomMiddleware extends MiddlewareAbstract
         return MiddlewareTypes::REQUEST_CREATED;
     }
 
-    public function run(Request &$request): void
+    public function getRequestedServices(): array
+    {
+        return [];
+    }
+
+    public function run(Request &$request, ...$services): void
     {
         if ($request->path == '/custom') {
             Redirect::to('/');
-        }
-        if (key_exists('Authorization', $request->headers) && $request->headers['Authorization'] == '123') {
-            Redirect::to('/auth');
         }
     }
 }

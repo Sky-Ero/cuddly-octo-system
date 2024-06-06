@@ -1,0 +1,3 @@
+services:
+  - './Core/src'
+  - './TestApp/src'

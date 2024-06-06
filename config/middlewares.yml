@@ -6,3 +6,4 @@ middlewares:
 
   REQUEST_CREATED:
     - TestApp\CustomMiddleware.php
+    - TestApp\AuthMiddleware.php
