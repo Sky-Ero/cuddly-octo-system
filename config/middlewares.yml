@@ -1,11 +1,8 @@
 middlewares:
+  namespace: TestApp
   REQUEST_CREATED:
-    type: REQUEST_CREATED
-    middlewares:
       # - TestApp\CustomMiddleware
       # - TestApp\AnotherCustomMiddleware
 
   CONTROLLER_MATCHED:
-    type: CONTROLLER_MATCHED
-    middlewares:
-      - TestApp\CustomMiddleware
+    - TestApp\CustomMiddleware.php

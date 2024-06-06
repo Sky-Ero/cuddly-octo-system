@@ -6,8 +6,13 @@ use Core\Http\Request;
 use Core\Services\MiddlewareAbstract;
 use Core\Services\MiddlewareTypes;
 
-class CustomMiddleware implements MiddlewareAbstract
+class CustomMiddleware extends MiddlewareAbstract
 {
+    public function getMiddlewareName(): string
+    {
+        return 'CustomMiddleware';
+    }
+
     public function getMiddlewareType(): MiddlewareTypes
     {
         return MiddlewareTypes::CONTROLLER_MATCHED;

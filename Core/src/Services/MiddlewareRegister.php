@@ -56,19 +56,21 @@ class MiddlewareRegister implements ServiceInterface
     {
 
         $middlewares_config = $config::$config['middlewares'];
-
+        $namespace = $middlewares_config['namespace'];
         foreach ($middlewares_config as $type => $middlewares) {
+            if ($type == 'namespace' )
+                continue;
             if (!isset($this->middlewares[$type])) {
                 $this->middlewares[$type] = [];
             }
 
-            foreach ($middlewares as $middleware) {
+            foreach ($middlewares as  $middleware) {
                 $this->loadMiddlewareClassFile($middleware);
                 $middleware_class = explode('\\', $middleware);
                 $middleware_class = $middleware_class[count($middleware_class) - 1];
                 $middleware_class = explode('.', $middleware_class)[0];
 
-                $this->middlewares[$type][] = new $middleware_class();
+                $this->middlewares[$type][] = new ($namespace.'\\'.$middleware_class)();
             }
         }
     }
